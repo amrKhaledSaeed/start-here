@@ -15,7 +15,6 @@
         "laravel/tinker": "^2.10.1",
         "lendable/composer-license-checker": "^1.2",
         "livewire/flux": "^2.4",
-        "livewire/flux-pro": "^2.4",
         "livewire/livewire": "^4.0",
         "smpita/configas": "^2.0",
         "smpita/typeas": "^4.0",
@@ -106,10 +105,5 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": {
-        "flux-pro": {
-            "type": "composer",
-            "url": "https://composer.fluxui.dev"
-        }
-    }
+    "repositories": {}
 }
