@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use App\Data\Auth\RegisterData;
+use App\Services\Auth\RegisterUserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -26,18 +24,15 @@ class Register extends Component
     /**
      * Handle an incoming registration request.
      */
-    public function register(): void
+    public function register(RegisterUserService $registerUserService): void
     {
-        /** @var array{name: string, email: string, password: string} */
-        $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-        ]);
+        /** @var array{name: string, email: string, password: string} $validated */
+        $validated = $this->validate(
+            RegisterData::rules(),
+            messages: RegisterData::messages(),
+        );
 
-        $validated['password'] = Hash::make($validated['password']);
-
-        event(new Registered(($user = User::create($validated))));
+        $user = $registerUserService->register(RegisterData::fromArray($validated));
 
         Auth::login($user);
 

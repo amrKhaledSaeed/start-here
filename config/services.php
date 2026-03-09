@@ -43,4 +43,22 @@ return [
         'redirect_url' => env('WORKOS_REDIRECT_URL'),
     ],
 
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'openai'),
+        'timeout' => (int) env('AI_TIMEOUT', 10),
+        'retries' => (int) env('AI_RETRIES', 1),
+        'openai' => [
+            'api_key' => env('OPENAI_API_KEY'),
+            'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+        ],
+        'gemini' => [
+            'api_key' => env('GEMINI_API_KEY'),
+            'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+        ],
+        'claude' => [
+            'api_key' => env('CLAUDE_API_KEY'),
+            'model' => env('CLAUDE_MODEL', 'claude-3-5-sonnet-latest'),
+        ],
+    ],
+
 ];

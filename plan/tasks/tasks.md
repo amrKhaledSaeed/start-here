@@ -1,12 +1,12 @@
 # SmartShop Mini Implementation Tasks
 
 ## 1. Project Setup
-- [ ] Confirm project baseline (Laravel 12, PHP 8.4, Livewire stack) and lock assumptions in planning notes
-- [ ] Configure `.env` for local database, cache, queue, session, mail, and app URL
-- [ ] Add AI provider configuration keys in `config/services.php` and reference only via config
-- [ ] Create route groups and naming strategy for `products.*`, `cart.*`, and `checkout.*`
-- [ ] Add base layout updates for store navigation, auth actions, and cart badge placeholder
-- [ ] Define repository-service-controller folder conventions under existing `app/` structure
+- [x] Confirm project baseline (Laravel 12, PHP 8.4, Livewire stack) and lock assumptions in planning notes
+- [x] Configure `.env` for local database, cache, queue, session, mail, and app URL
+- [x] Add AI provider configuration keys in `config/services.php` and reference only via config
+- [x] Create route groups and naming strategy for `products.*`, `cart.*`, and `checkout.*`
+- [x] Add base layout updates for store navigation, auth actions, and cart badge placeholder
+- [x] Define repository-service-controller folder conventions under existing `app/` structure
 
 ## 2. Authentication
 - [ ] Reuse existing auth flow (register, login, logout, reset password, verification) as SmartShop auth baseline

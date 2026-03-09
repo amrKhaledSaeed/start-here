@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -31,6 +32,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'uuid' => (string) Str::uuid7(),
             'password' => static::$password ??= Hash::make('password'),
+            'user_type' => UserType::Customer->value,
             'remember_token' => Str::random(10),
             'two_factor_confirmed_at' => null,
             'two_factor_secret' => null,

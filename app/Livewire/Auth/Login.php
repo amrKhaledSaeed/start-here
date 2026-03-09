@@ -4,26 +4,19 @@ declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Models\User;
-use Illuminate\Auth\Events\Lockout;
+use App\Data\Auth\LoginData;
+use App\Services\Auth\LoginUserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Features;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Smpita\TypeAs\TypeAs;
 
 #[Layout('components.layouts.auth')]
 class Login extends Component
 {
-    #[Validate('required|string|email')]
     public string $email = '';
 
-    #[Validate('required|string')]
     public string $password = '';
 
     public bool $remember = false;
@@ -31,18 +24,25 @@ class Login extends Component
     /**
      * Handle an incoming authentication request.
      */
-    public function login(): void
+    public function login(LoginUserService $loginUserService): void
     {
-        $this->validate();
+        /** @var array{email: string, password: string} $validated */
+        $validated = $this->validate(
+            LoginData::rules(),
+            messages: LoginData::messages(),
+        );
 
-        $this->ensureIsNotRateLimited();
+        $loginData = LoginData::fromArray([
+            ...$validated,
+            'remember' => $this->remember,
+        ]);
 
-        $user = $this->validateCredentials();
+        $user = $loginUserService->authenticate($loginData);
 
         if (Features::canManageTwoFactorAuthentication() && $user->hasEnabledTwoFactorAuthentication()) {
             Session::put([
                 'login.id' => $user->getKey(),
-                'login.remember' => $this->remember,
+                'login.remember' => $loginData->remember,
             ]);
 
             $this->redirect(route('two-factor.login'), navigate: true);
@@ -50,58 +50,9 @@ class Login extends Component
             return;
         }
 
-        Auth::login($user, $this->remember);
-
-        RateLimiter::clear($this->throttleKey());
+        Auth::login($user, $loginData->remember);
         Session::regenerate();
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-    }
-
-    /**
-     * Validate the user's credentials.
-     */
-    protected function validateCredentials(): User
-    {
-        $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email, 'password' => $this->password]);
-
-        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
-
-        return TypeAs::class(User::class, $user);
-    }
-
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
-    protected function ensureIsNotRateLimited(): void
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
-
-        event(new Lockout(request()));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
-    }
-
-    /**
-     * Get the authentication rate limiting throttle key.
-     */
-    protected function throttleKey(): string
-    {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
 }

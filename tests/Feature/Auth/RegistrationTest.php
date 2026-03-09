@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\UserType;
 use App\Livewire\Auth\Register;
 use Livewire\Livewire;
 
@@ -24,4 +25,9 @@ test('new users can register', function () {
         ->assertRedirect(route('dashboard', absolute: false));
 
     $this->assertAuthenticated();
+
+    $this->assertDatabaseHas('users', [
+        'email' => 'test@example.com',
+        'user_type' => UserType::Customer->value,
+    ]);
 });
