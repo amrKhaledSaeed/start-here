@@ -29,9 +29,13 @@
                         href="{{ route('cart.index') }}"
                     >
                         {{ __('Cart') }}
-                        <span class="ms-1 rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">0</span>
+                        <livewire:store.cart-badge />
                     </a>
                     @auth
+                        <a
+                            class="{{ request()->routeIs('wishlist.*') ? 'font-semibold' : '' }}"
+                            href="{{ route('wishlist.index') }}"
+                        >{{ __('Wishlist') }}</a>
                         <a
                             class="{{ request()->routeIs('checkout.*') ? 'font-semibold' : '' }}"
                             href="{{ route('checkout.index') }}"
@@ -73,6 +77,8 @@
     <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         {{ $slot }}
     </main>
+
+    @fluxScripts
 </body>
 
 </html>

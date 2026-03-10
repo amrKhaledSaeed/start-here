@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Product;
 use App\Models\User;
 
 use function Pest\Laravel\withoutVite;
@@ -17,7 +18,18 @@ test('products index route is publicly accessible', function () {
 });
 
 test('products show route is publicly accessible', function () {
-    $this->get(route('products.show', ['slug' => 'demo-product']))
+    $product = Product::query()->create([
+        'slug' => 'demo-product',
+        'name' => 'Demo Product',
+        'description' => 'Demo description',
+        'price' => 99.90,
+        'stock' => 20,
+        'image' => '/images/demo-product.png',
+        'category' => 'demo',
+        'is_active' => true,
+    ]);
+
+    $this->get(route('products.show', ['product' => $product]))
         ->assertOk()
         ->assertSee('demo-product');
 });
@@ -43,6 +55,8 @@ test('authenticated user can access checkout routes', function () {
 
     $this->actingAs($user)
         ->get(route('checkout.confirmation'))
-        ->assertOk()
-        ->assertSee('Checkout Confirmation');
+        ->assertRedirect(route('checkout.index'))
+        ->assertSessionHasErrors([
+            'checkout' => 'No checkout simulation found. Please complete checkout first.',
+        ]);
 });

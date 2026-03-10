@@ -1,8 +1,7 @@
 <x-layouts.store>
-    <div class="space-y-2">
+    <div class="space-y-6">
         <h1 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{{ __('Cart') }}</h1>
-        <p class="text-zinc-600 dark:text-zinc-300">
-            {{ __('Session cart page placeholder. Implementation starts in the next sprint tasks.') }}
-        </p>
+
+        <livewire:store.cart-panel />
     </div>
 </x-layouts.store>

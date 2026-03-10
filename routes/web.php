@@ -36,6 +36,10 @@ Route::group([], function () {
         Route::prefix('settings')->group(function () {
             RouteLoader::load('/routes/web/auth/settings/*.php');
         });
+
+        Route::prefix('wishlist')->name('wishlist.')->group(function () {
+            RouteLoader::load('/routes/web/auth/wishlist/*.php');
+        });
     });
 });
 

@@ -27,7 +27,7 @@
                     autocomplete="email"
                 />
 
-                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
+                @if (user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !user()->hasVerifiedEmail())
                     <div>
                         <flux:text class="mt-4">
                             {{ __('Your email address is unverified.') }}
@@ -70,3 +70,4 @@
         <livewire:settings.delete-user-form />
     </x-settings.layout>
 </section>
+

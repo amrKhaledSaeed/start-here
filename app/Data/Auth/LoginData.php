@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Data\Auth;
 
 use Illuminate\Support\Str;
+use Smpita\TypeAs\TypeAs;
 
 final class LoginData
 {
@@ -42,8 +43,8 @@ final class LoginData
     public static function fromArray(array $data): self
     {
         return new self(
-            email: Str::lower((string) $data['email']),
-            password: (string) $data['password'],
+            email: Str::lower(TypeAs::string($data['email'])),
+            password: TypeAs::string($data['password']),
             remember: (bool) ($data['remember'] ?? false),
         );
     }

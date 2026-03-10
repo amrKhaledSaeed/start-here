@@ -28,8 +28,8 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    protected function modelClass(): string
+    protected function model(): User
     {
-        return User::class;
+        return new User;
     }
 }

@@ -47,6 +47,7 @@ return [
         'provider' => env('AI_PROVIDER', 'openai'),
         'timeout' => (int) env('AI_TIMEOUT', 10),
         'retries' => (int) env('AI_RETRIES', 1),
+        'cache_ttl' => (int) env('AI_CACHE_TTL', 300),
         'openai' => [
             'api_key' => env('OPENAI_API_KEY'),
             'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),

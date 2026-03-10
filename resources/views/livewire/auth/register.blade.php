@@ -74,7 +74,10 @@
                 wire:loading.attr="disabled"
                 wire:target="register"
             >
-                <span wire:loading.remove wire:target="register">{{ __('Create account') }}</span>
+                <span
+                    wire:loading.remove
+                    wire:target="register"
+                >{{ __('Create account') }}</span>
                 <span
                     class="inline-flex items-center gap-2"
                     wire:loading

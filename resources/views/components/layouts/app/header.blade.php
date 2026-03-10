@@ -61,7 +61,7 @@
         >
             <flux:profile
                 class="cursor-pointer"
-                :initials="auth()->user()->initials()"
+                :initials="user()->initials()"
             />
 
             <flux:menu>
@@ -72,13 +72,13 @@
                                 <span
                                     class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
                                 >
-                                    {{ auth()->user()->initials() }}
+                                    {{ user()->initials() }}
                                 </span>
                             </span>
 
                             <div class="grid flex-1 text-start text-sm leading-tight">
-                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                <span class="truncate font-semibold">{{ user()->name }}</span>
+                                <span class="truncate text-xs">{{ user()->email }}</span>
                             </div>
                         </div>
                     </div>
@@ -154,3 +154,4 @@
 </body>
 
 </html>
+

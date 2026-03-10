@@ -22,5 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
             'user_type' => UserType::Customer->value,
         ]);
+
+        $this->call(ProductSeeder::class);
     }
 }

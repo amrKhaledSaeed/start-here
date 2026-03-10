@@ -6,6 +6,7 @@ namespace App\Data\Auth;
 
 use App\Models\User;
 use Illuminate\Validation\Rules;
+use Smpita\TypeAs\TypeAs;
 
 final class RegisterData
 {
@@ -47,9 +48,9 @@ final class RegisterData
     public static function fromArray(array $data): self
     {
         return new self(
-            name: (string) $data['name'],
-            email: (string) $data['email'],
-            password: (string) $data['password'],
+            name: TypeAs::string($data['name']),
+            email: TypeAs::string($data['email']),
+            password: TypeAs::string($data['password']),
         );
     }
 

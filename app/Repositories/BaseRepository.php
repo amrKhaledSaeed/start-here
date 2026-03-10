@@ -14,45 +14,46 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseRepository
 {
     /**
-     * @return class-string<TModel>
+     * @return TModel
      */
-    abstract protected function modelClass(): string;
+    abstract protected function model(): Model;
 
     /**
      * @return Builder<TModel>
      */
     public function query(): Builder
     {
-        $modelClass = $this->modelClass();
+        /** @var Builder<TModel> $query */
+        $query = $this->model()->newQuery();
 
-        return $modelClass::query();
+        return $query;
     }
 
     /**
-     * @param  array<array-key, string>  $columns
      * @return Collection<int, TModel>
      */
-    public function all(array $columns = ['*']): Collection
+    public function all(): Collection
     {
-        return $this->query()->get($columns);
+        $results = $this->query()->get();
+
+        /** @var Collection<int, TModel> $results */
+        return $results;
     }
 
     /**
-     * @param  array<array-key, string>  $columns
      * @return TModel|null
      */
-    public function find(int|string $id, array $columns = ['*']): ?Model
+    public function find(int|string $id): ?Model
     {
-        return $this->query()->find($id, $columns);
+        return $this->query()->find($id);
     }
 
     /**
-     * @param  array<array-key, string>  $columns
      * @return TModel
      */
-    public function findOrFail(int|string $id, array $columns = ['*']): Model
+    public function findOrFail(int|string $id): Model
     {
-        return $this->query()->findOrFail($id, $columns);
+        return $this->query()->findOrFail($id);
     }
 
     /**

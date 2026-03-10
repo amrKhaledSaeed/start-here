@@ -9,6 +9,7 @@ use App\Concerns\LogsModelActivity;
 use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -22,6 +23,14 @@ class User extends Authenticatable
     protected $guarded = ['id', 'created_at', 'updated_at', 'uuid'];
 
     protected $hidden = ['remember_token'];
+
+    /**
+     * @return HasMany<CartItem, $this>
+     */
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
+    }
 
     public function initials(): string
     {
@@ -37,6 +46,22 @@ class User extends Authenticatable
     public function uniqueIds(): array
     {
         return ['uuid'];
+    }
+
+    /**
+     * @return HasMany<StoreAnalyticsEvent, $this>
+     */
+    public function storeAnalyticsEvents(): HasMany
+    {
+        return $this->hasMany(StoreAnalyticsEvent::class);
+    }
+
+    /**
+     * @return HasMany<WishlistItem, $this>
+     */
+    public function wishlistItems(): HasMany
+    {
+        return $this->hasMany(WishlistItem::class);
     }
 
     protected function casts(): array
