@@ -72,15 +72,15 @@
 
                 <select
                     class="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
-                    name="category"
-                    wire:model.live="category"
+                    name="category_id"
+                    wire:model.live="categoryId"
                 >
                     <option value="">{{ __('All categories') }}</option>
                     @foreach ($categories as $category)
                         <option
-                            value="{{ $category }}"
-                            @selected($filters['category'] === $category)
-                        >{{ ucfirst($category) }}</option>
+                            value="{{ $category->id }}"
+                            @selected($filters['category_id'] === $category->id)
+                        >{{ $category->name }}</option>
                     @endforeach
                 </select>
 

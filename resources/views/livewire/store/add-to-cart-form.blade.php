@@ -23,7 +23,6 @@
                 <button
                     class="rounded-md border border-zinc-300 px-2 py-2 text-zinc-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-600 dark:text-zinc-200"
                     type="button"
-                    wire:click="decrement"
                     onclick="const input=this.parentElement.querySelector('input[name=quantity]'); const min=Number(input.min)||1; input.value=Math.max(min, Number(input.value||min)-1); input.dispatchEvent(new Event('input',{bubbles:true}));"
                     wire:loading.attr="disabled"
                     @disabled($stock < 1)
@@ -35,14 +34,13 @@
                     name="quantity"
                     min="1"
                     max="{{ max($stock, 1) }}"
-                    wire:model.live="quantity"
+                    wire:model="quantity"
                     wire:loading.attr="disabled"
                     @disabled($stock < 1)
                 >
                 <button
                     class="rounded-md border border-zinc-300 px-2 py-2 text-zinc-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-600 dark:text-zinc-200"
                     type="button"
-                    wire:click="increment"
                     onclick="const input=this.parentElement.querySelector('input[name=quantity]'); const max=Number(input.max)||1; const min=Number(input.min)||1; input.value=Math.min(max, Math.max(min, Number(input.value||min)+1)); input.dispatchEvent(new Event('input',{bubbles:true}));"
                     wire:loading.attr="disabled"
                     @disabled($stock < 1)

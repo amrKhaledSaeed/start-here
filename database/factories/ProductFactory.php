@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -21,15 +22,6 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $categories = [
-            'electronics',
-            'home',
-            'fashion',
-            'sports',
-            'beauty',
-            'books',
-        ];
-        $category = fake()->randomElement($categories);
         $name = TypeAs::string(fake()->unique()->words(3, true));
         $slug = Str::slug($name);
 
@@ -40,7 +32,7 @@ class ProductFactory extends Factory
             'price' => fake()->randomFloat(2, 9, 499),
             'stock' => fake()->numberBetween(0, 120),
             'image' => '/images/products/'.$slug.'.jpg',
-            'category' => $category,
+            'category_id' => Category::factory(),
             'is_active' => true,
         ];
     }

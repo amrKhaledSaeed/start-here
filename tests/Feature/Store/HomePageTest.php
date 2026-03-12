@@ -31,7 +31,7 @@ test('products index shows only active products', function () {
 });
 
 test('products index applies search and category filters', function () {
-    Product::factory()->create([
+    $sportsProduct = Product::factory()->create([
         'name' => 'Trail Running Shoes',
         'slug' => 'trail-running-shoes',
         'category' => 'sports',
@@ -47,7 +47,7 @@ test('products index applies search and category filters', function () {
 
     $this->get(route('products.index', [
         'search' => 'trail',
-        'category' => 'sports',
+        'category_id' => $sportsProduct->category_id,
     ]))
         ->assertOk()
         ->assertSee('Trail Running Shoes')
@@ -75,18 +75,19 @@ test('products index applies sorting options', function () {
 });
 
 test('products index keeps query parameters in pagination links', function () {
-    Product::factory()->count(13)->create([
+    $products = Product::factory()->count(13)->create([
         'category' => 'books',
         'is_active' => true,
     ]);
+    $categoryId = $products->first()?->category_id;
 
     $this->get(route('products.index', [
-        'category' => 'books',
+        'category_id' => $categoryId,
         'sort' => 'price_asc',
         'per_page' => 12,
     ]))
         ->assertOk()
-        ->assertSee('category=books&amp;sort=price_asc&amp;per_page=12&amp;page=2', false);
+        ->assertSee('category_id='.$categoryId.'&amp;sort=price_asc&amp;per_page=12&amp;page=2', false);
 });
 
 test('products index shows empty state when filters return no products', function () {

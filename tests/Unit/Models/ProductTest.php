@@ -17,7 +17,7 @@ it('has required products table columns', function () {
         'price',
         'stock',
         'image',
-        'category',
+        'category_id',
         'is_active',
     ]))->toBeTrue();
 });

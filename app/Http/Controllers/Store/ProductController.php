@@ -19,7 +19,7 @@ class ProductController extends Controller
         ProductIndexRequest $request,
         StorefrontService $storefrontService,
     ): View {
-        /** @var array{search?: mixed, category?: mixed, sort?: mixed, per_page?: mixed} $validated */
+        /** @var array{search?: mixed, category_id?: mixed, sort?: mixed, per_page?: mixed} $validated */
         $validated = $request->validated();
         $listingData = ProductListData::fromArray($validated);
         $resolvedUser = auth()->check() ? user() : null;

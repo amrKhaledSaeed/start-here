@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Product;
 
 use App\Data\Product\ProductListData;
+use App\Models\Category;
 use App\Models\Product;
 use App\Repositories\Product\ProductRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -24,7 +25,7 @@ class ProductService
     }
 
     /**
-     * @return Collection<int, string>
+     * @return Collection<int, Category>
      */
     public function activeCategories(): Collection
     {

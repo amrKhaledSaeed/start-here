@@ -53,6 +53,6 @@ class Login extends Component
         Auth::login($user, $loginData->remember);
         Session::regenerate();
 
-        $this->redirectIntended(default: route('home', absolute: false), navigate: true);
+        $this->redirect('/', navigate: false);
     }
 }

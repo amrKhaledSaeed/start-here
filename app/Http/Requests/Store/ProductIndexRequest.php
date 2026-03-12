@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Store;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductIndexRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class ProductIndexRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:100'],
-            'category' => ['nullable', 'string', 'max:100'],
+            'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')],
             'sort' => ['nullable', 'string', 'in:relevance,price_asc,price_desc,newest'],
             'per_page' => ['nullable', 'integer', 'min:6', 'max:48'],
         ];

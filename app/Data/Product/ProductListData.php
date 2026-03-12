@@ -10,13 +10,13 @@ class ProductListData
 {
     public function __construct(
         public readonly ?string $search,
-        public readonly ?string $category,
+        public readonly ?int $categoryId,
         public readonly string $sort,
         public readonly int $perPage,
     ) {}
 
     /**
-     * @param  array{search?: mixed, category?: mixed, sort?: mixed, per_page?: mixed}  $data
+     * @param  array{search?: mixed, category_id?: mixed, sort?: mixed, per_page?: mixed}  $data
      */
     public static function fromArray(array $data): self
     {
@@ -25,20 +25,20 @@ class ProductListData
 
         return new self(
             search: TypeAs::nullableString($data['search'] ?? null),
-            category: TypeAs::nullableString($data['category'] ?? null),
+            categoryId: TypeAs::nullableInt($data['category_id'] ?? null),
             sort: in_array($sort, $allowedSort, true) ? $sort : 'relevance',
             perPage: TypeAs::int($data['per_page'] ?? 12),
         );
     }
 
     /**
-     * @return array{search: string|null, category: string|null, sort: string, per_page: int}
+     * @return array{search: string|null, category_id: int|null, sort: string, per_page: int}
      */
     public function toArray(): array
     {
         return [
             'search' => $this->search,
-            'category' => $this->category,
+            'category_id' => $this->categoryId,
             'sort' => $this->sort,
             'per_page' => $this->perPage,
         ];

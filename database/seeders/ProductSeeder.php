@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Smpita\TypeAs\TypeAs;
 
@@ -16,6 +18,8 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        $categoryIdsBySlug = $this->categoryIdsBySlug();
+
         $catalog = [
             ['name' => 'Wireless Noise Cancelling Headphones', 'category' => 'electronics'],
             ['name' => 'Portable Bluetooth Speaker', 'category' => 'electronics'],
@@ -47,6 +51,16 @@ class ProductSeeder extends Seeder
             $name = TypeAs::string($item['name']);
             $category = TypeAs::string($item['category']);
             $slug = Str::slug($name);
+            $categorySlug = Str::slug($category);
+            $categoryId = TypeAs::nullableInt($categoryIdsBySlug->get($categorySlug));
+
+            if ($categoryId === null) {
+                $categoryModel = Category::query()->firstOrCreate(
+                    ['slug' => $categorySlug],
+                    ['name' => Str::title($category)],
+                );
+                $categoryId = $categoryModel->id;
+            }
 
             Product::factory()->create([
                 'slug' => $slug,
@@ -55,10 +69,27 @@ class ProductSeeder extends Seeder
                 'price' => $this->deterministicPrice($index),
                 'stock' => $this->deterministicStock($index),
                 'image' => '/images/products/'.$slug.'.jpg',
-                'category' => $category,
+                'category_id' => $categoryId,
                 'is_active' => true,
             ]);
         }
+    }
+
+    /**
+     * @return Collection<string, int>
+     */
+    private function categoryIdsBySlug(): Collection
+    {
+        if (Category::query()->count() === 0) {
+            $this->call(CategorySeeder::class);
+        }
+
+        /** @var Collection<string, int> $categoryIdsBySlug */
+        $categoryIdsBySlug = Category::query()
+            ->pluck('id', 'slug')
+            ->map(fn (mixed $id): int => TypeAs::int($id));
+
+        return $categoryIdsBySlug;
     }
 
     private function deterministicPrice(int $index): float

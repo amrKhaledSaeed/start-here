@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
             'user_type' => UserType::Customer->value,
         ]);
 
-        $this->call(ProductSeeder::class);
+        $this->call([
+            CategorySeeder::class,
+            ProductSeeder::class,
+        ]);
     }
 }

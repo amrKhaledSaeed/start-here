@@ -25,7 +25,7 @@ class StorefrontService
     ) {}
 
     /**
-     * @return array{products: LengthAwarePaginator<int, Product>, filters: array{search: string|null, category: string|null, sort: string, per_page: int}, categories: \Illuminate\Support\Collection<int, string>, wishlistProductIds: array<int, int>}
+     * @return array{products: LengthAwarePaginator<int, Product>, filters: array{search: string|null, category_id: int|null, sort: string, per_page: int}, categories: \Illuminate\Support\Collection<int, \App\Models\Category>, wishlistProductIds: array<int, int>}
      */
     public function listing(ProductListData $listingData, ?User $user): array
     {
@@ -40,7 +40,7 @@ class StorefrontService
     }
 
     /**
-     * @return array{products: LengthAwarePaginator<int, Product>, filters: array{search: string|null, category: string|null, sort: string, per_page: int}, categories: \Illuminate\Support\Collection<int, string>, recommendations: array<string, mixed>, wishlistProductIds: array<int, int>}
+     * @return array{products: LengthAwarePaginator<int, Product>, filters: array{search: string|null, category_id: int|null, sort: string, per_page: int}, categories: \Illuminate\Support\Collection<int, \App\Models\Category>, recommendations: array<string, mixed>, wishlistProductIds: array<int, int>}
      */
     public function home(ProductListData $listingData, ?User $user): array
     {

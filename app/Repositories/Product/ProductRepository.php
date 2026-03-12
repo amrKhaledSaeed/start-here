@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Product;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Repositories\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -25,17 +26,19 @@ class ProductRepository extends BaseRepository
     }
 
     /**
-     * @param  array{search?: string|null, category?: string|null, sort?: string, per_page?: int}  $filters
+     * @param  array{search?: string|null, category_id?: int|null, sort?: string, per_page?: int}  $filters
      * @return LengthAwarePaginator<int, Product>
      */
     public function paginateActive(array $filters = []): LengthAwarePaginator
     {
         $search = TypeAs::nullableString($filters['search'] ?? null);
-        $category = TypeAs::nullableString($filters['category'] ?? null);
+        $categoryId = TypeAs::nullableInt($filters['category_id'] ?? null);
         $sort = TypeAs::string($filters['sort'] ?? 'relevance');
         $perPage = TypeAs::int($filters['per_page'] ?? 12);
 
-        $query = $this->query()->where('is_active', true);
+        $query = $this->query()
+            ->with('productCategory')
+            ->where('is_active', true);
 
         if ($search !== null && $search !== '') {
             $query->where(function (Builder $builder) use ($search): void {
@@ -45,8 +48,8 @@ class ProductRepository extends BaseRepository
             });
         }
 
-        if ($category !== null && $category !== '') {
-            $query->where('category', $category);
+        if ($categoryId !== null && $categoryId > 0) {
+            $query->where('category_id', $categoryId);
         }
 
         $this->applySort($query, $sort, $search);
@@ -57,6 +60,7 @@ class ProductRepository extends BaseRepository
     public function findActiveBySlug(string $slug): ?Product
     {
         return $this->query()
+            ->with('productCategory')
             ->where('slug', $slug)
             ->where('is_active', true)
             ->first();
@@ -65,6 +69,7 @@ class ProductRepository extends BaseRepository
     public function findAvailableForCart(int $productId, int $quantity): ?Product
     {
         return $this->query()
+            ->with('productCategory')
             ->whereKey($productId)
             ->where('is_active', true)
             ->where('stock', '>=', $quantity)
@@ -82,6 +87,7 @@ class ProductRepository extends BaseRepository
         }
 
         return $this->query()
+            ->with('productCategory')
             ->whereIn('id', $productIds)
             ->where('is_active', true)
             ->get();
@@ -98,6 +104,7 @@ class ProductRepository extends BaseRepository
         }
 
         return $this->query()
+            ->with('productCategory')
             ->whereIn('slug', $slugs)
             ->where('is_active', true)
             ->where('stock', '>', 0)
@@ -110,9 +117,10 @@ class ProductRepository extends BaseRepository
     public function findFallbackRecommendations(Product $product, int $limit = 4): Collection
     {
         return $this->query()
+            ->with('productCategory')
             ->where('is_active', true)
             ->where('id', '!=', $product->id)
-            ->where('category', $product->category)
+            ->where('category_id', $product->category_id)
             ->orderByRaw('ABS(price - ?) asc', [$product->price])
             ->orderBy('id')
             ->limit($limit)
@@ -126,6 +134,7 @@ class ProductRepository extends BaseRepository
     public function randomActive(int $limit = 3, array $excludeIds = []): Collection
     {
         $query = $this->query()
+            ->with('productCategory')
             ->where('is_active', true)
             ->where('stock', '>', 0);
 
@@ -146,6 +155,7 @@ class ProductRepository extends BaseRepository
     public function recommendationCandidatePool(int $limit = 24, array $excludeIds = []): Collection
     {
         $query = $this->query()
+            ->with('productCategory')
             ->where('is_active', true)
             ->where('stock', '>', 0)
             ->latest('id');
@@ -160,17 +170,15 @@ class ProductRepository extends BaseRepository
     }
 
     /**
-     * @return SupportCollection<int, string>
+     * @return SupportCollection<int, Category>
      */
     public function activeCategories(): SupportCollection
     {
-        /** @var SupportCollection<int, string> $categories */
-        $categories = $this->query()
-            ->where('is_active', true)
-            ->select('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
+        /** @var SupportCollection<int, Category> $categories */
+        $categories = Category::query()
+            ->whereHas('products', fn (Builder $query): Builder => $query->where('is_active', true))
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
 
         return $categories;
     }

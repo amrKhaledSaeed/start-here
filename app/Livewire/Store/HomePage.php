@@ -20,8 +20,8 @@ class HomePage extends Component
     #[Url(as: 'search')]
     public ?string $search = null;
 
-    #[Url(as: 'category')]
-    public ?string $category = null;
+    #[Url(as: 'category_id')]
+    public ?int $categoryId = null;
 
     #[Url(as: 'sort')]
     public string $sort = 'relevance';
@@ -34,7 +34,7 @@ class HomePage extends Component
         $this->resetPage();
     }
 
-    public function updatedCategory(): void
+    public function updatedCategoryId(): void
     {
         $this->resetPage();
     }
@@ -47,7 +47,7 @@ class HomePage extends Component
     public function resetFilters(): void
     {
         $this->search = null;
-        $this->category = null;
+        $this->categoryId = null;
         $this->sort = 'relevance';
         $this->perPage = 12;
         $this->resetPage();
@@ -58,7 +58,7 @@ class HomePage extends Component
     ): View {
         $listingData = ProductListData::fromArray([
             'search' => $this->search,
-            'category' => $this->category,
+            'category_id' => $this->categoryId,
             'sort' => $this->sort,
             'per_page' => $this->perPage,
         ]);
